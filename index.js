@@ -4,63 +4,49 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-class Member {
-    constructor(member) {
-        this.member = member;
-        this.name = null;
-        this.id = null;
-        this.email = null;
-        this.option = null;
-    }
-
-    addMemberDetails() {
-        rl.question(`${this.member} name:`, (name) => {
-            rl.question(`${this.member} ID:`, (id) => {
-                rl.question(`${this.member} email:`, (email) => {
-                    let optionPrompt;
-                    if (this.member === "Engineer") {
-                        optionPrompt = `${this.member} GitHub Username:`;
-                    } else if (this.member === "Intern") {
-                        optionPrompt = `${this.member} school:`;
-                    } else {
-                        optionPrompt = `${this.member} office number:`;
+function add_member(member){
+    rl.question(`${member} name:`, function(name) {
+        rl.question(`${member} ID:`, function(id) {
+            rl.question(`${member} email:`, function(email) {
+                if (member=="Engineer") {
+                    var option_prompt = `${member} GitHub Username:`
+                } else if (member=="Intern") {
+                    var option_prompt = `${member} school:`
+                } else {
+                    var option_prompt = `${member} office number:`
+                }
+                rl.question(`${option_prompt}`, function(option) {
+                    let mem_object = {
+                        member: member,
+                        name: name,
+                        id: id,
+                        email: email,
+                        option: option,
                     }
-
-                    rl.question(`${optionPrompt}`, (option) => {
-                        this.name = name;
-                        this.id = id;
-                        this.email = email;
-                        this.option = option;
-                        memArray.push(this); // Store member object in memArray
-                        rl.question("1) Add an engineer\n2) Add an intern\n3) Finish\n", (selectNew) => {
-                            if (selectNew === "3" || selectNew === "") {
-                                this.end();
-                            } else if (selectNew === "1") {
-                                this.addMember("Engineer");
-                            } else {
-                                this.addMember("Intern");
-                            }
-                        });
+                    mem_array.push(mem_object)
+                    rl.question("1) Add an engineer\n2) Add an intern\n3) Finish\n", function(select_new) {
+                        if (select_new=="3" || "") {
+                            rl.close()
+                            end()
+                        } else if (select_new=="1") {
+                            add_member("Engineer")
+                        } else {
+                            add_member("Intern")
+                        }
                     });
                 });
             });
         });
-    }
-
-    addMember(member) {
-        const newMember = new Member(member);
-        newMember.addMemberDetails();
-    }
-
-    end() {
-        rl.close();
-        for (let i = 0; i < memArray.length; i++) {
-            console.log(memArray[i]);
-        }
-        process.exit(0);
-    }
+    });
 }
 
-const memArray = [];
-const teamManager = new Member("Team Manager");
-teamManager.addMemberDetails();
+const mem_array = []
+add_member("Team Manager")
+
+
+function end() {
+    for (let i=0; i<mem_array.length; i++) {
+        console.log(mem_array[i])
+    }
+    process.exit(0);
+};
